@@ -31,33 +31,41 @@ window.addEventListener('message', (e) => {
 });
 
 function setup(){
-    const container = document.getElementById('scoreCanvas') || document.body;
-    // 強制容器為 relative 並移除內距，讓 canvas 可滿版覆蓋
-    container.style.position = container.style.position || 'relative';
-    container.style.padding = '0';
-    container.style.overflow = 'hidden';
-    // 若容器尚未有高度，設定一個最小高度以避免高度為 0
-    if (!container.clientHeight) container.style.minHeight = container.style.minHeight || '220px';
-
-    const w = Math.max(260, container.clientWidth || 320);
-    const h = container.clientHeight && container.clientHeight > 0 ? container.clientHeight : Math.max(180, Math.round(w * 0.6));
-    const cnv = createCanvas(w, h);
-    cnv.parent('scoreCanvas');
-    // 讓 canvas 絕對定位並覆蓋整個容器（滿版效果）
-    if (cnv && cnv.elt) {
-        cnv.elt.style.position = 'absolute';
-        cnv.elt.style.top = '0';
-        cnv.elt.style.left = '0';
-        cnv.elt.style.width = '100%';
-        cnv.elt.style.height = '100%';
-        cnv.elt.style.display = 'block';
+    const container = document.getElementById('scoreCanvas');
+    if (!container) {
+        console.error('scoreCanvas container not found');
+        return;
     }
+
+    // 設定容器的基本樣式（絕對定位 canvas 的前提）
+    container.style.position = 'relative';
+    container.style.overflow = 'hidden';
+    
+    // 計算尺寸
+    const w = container.clientWidth || 320;
+    const h = container.clientHeight || 260;
+    
+    const cnv = createCanvas(w, h);
+    cnv.parent(container);
+    
+    // 設定 canvas DOM 元素的樣式（使其絕對定位並覆蓋容器）
+    if (cnv && cnv.canvas) {
+        cnv.canvas.style.position = 'absolute';
+        cnv.canvas.style.top = '0';
+        cnv.canvas.style.left = '0';
+        cnv.canvas.style.width = '100%';
+        cnv.canvas.style.height = '100%';
+        cnv.canvas.style.margin = '0';
+        cnv.canvas.style.padding = '0';
+        cnv.canvas.style.display = 'block';
+    }
+    
     clear();
     noLoop();
 }
 
 function draw(){
-    clear(); // 透明底
+    background(255, 255, 255, 0); // 透明背景（保留容器的 CSS 背景）
 
     // 尚未收到分數時顯示提示文字（灰色）
     if (!isFinite(pct) && !animActive) {
@@ -247,15 +255,12 @@ function drawHighAnim(t, value){
 }
 
 function windowResized(){
-    const container = document.getElementById('scoreCanvas') || document.body;
-    const w = Math.max(260, container.clientWidth || 320);
-    const h = container.clientHeight && container.clientHeight > 0 ? container.clientHeight : Math.max(180, Math.round(w * 0.6));
+    const container = document.getElementById('scoreCanvas');
+    if (!container) return;
+    
+    const w = container.clientWidth || 320;
+    const h = container.clientHeight || 260;
+    
     resizeCanvas(w, h);
-    // 確保 DOM 大小也同步（當容器高改變時）
-    const cnv = document.querySelector('#scoreCanvas canvas');
-    if (cnv) {
-        cnv.style.width = '100%';
-        cnv.style.height = '100%';
-    }
     redraw();
 }
