@@ -51,7 +51,8 @@ body{background:var(--bg);color:#111}
 }
 
 /* ensure p5 canvas is block-level inside container */
-#scoreCanvas canvas{display:block;width:100%;height:auto}
+#scoreCanvas{margin:0;padding:0}
+#scoreCanvas canvas{display:block;width:100%;height:auto;margin:0;padding:0}
 
 /* small utilities */
 .section-title + .iframe-wrap{margin-top:8px}
