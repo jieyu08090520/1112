@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>數位教材製作期中報告</title>
+
+    <!-- 主要樣式 -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- p5.js 函式庫（使用本地檔案） -->
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.sound.min.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>H5P 拖曳互動答題</h1>
+            <nav class="site-nav">
+                <a href="#">首頁</a>
+                <a href="#" id="openIntro">說明</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap main-grid">
+        <section class="content">
+            <h2 class="section-title">互動題目</h2>
+            <div class="iframe-wrap">
+                <iframe id="h5pIframe" src="3.html" title="H5P 題目"></iframe>
+            </div>
+        </section>
+
+        <aside class="side">
+            <h2 class="section-title">即時成績</h2>
+            <div id="scoreCanvas" class="score-canvas" aria-label="分數顯示區"></div>
+            <p class="hint">成績會在答題後顯示於上方視覺化面板。</p>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <small>製作：數位教材製作期中報告(鄭宇哲、陳佳堉)</small>
+        </div>
+    </footer>
+
+    <!-- 您的 p5.js 程式碼（放在頁面底部，以便 DOM 元素先載入） -->
+    <script src="sketch.js"></script>
+
+    <!-- 說明彈窗（Modal） -->
+    <div id="introModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="introTitle">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="關閉">&times;</button>
+            <h3 id="introTitle">H5P 拖曳互動答題 — 簡介</h3>
+            <p>這個 H5P 拖曳互動題型是讓學習者將項目拖曳到正確區域來完成配對或排序任務。它能夠：</p>
+            <ul>
+                <li>設計直觀的拖放題目，適合配對、分類的練習。</li>
+                <li>提供即時回饋，讓學習者知道正確與否。</li>
+            </ul>
+            <p>完成題目後，系統會計算分數並可透過即時成績顯示您取得的分數。</p>
+        </div>
+    </div>
+
+    <script>
+        // Modal 開關邏輯
+        (function(){
+            const openBtn = document.getElementById('openIntro');
+            const modal = document.getElementById('introModal');
+            const closeBtn = modal && modal.querySelector('.modal-close');
+
+            function show(){
+                modal.classList.add('show');
+                modal.setAttribute('aria-hidden','false');
+                // focus for accessibility
+                closeBtn && closeBtn.focus();
+            }
+            function hide(){
+                modal.classList.remove('show');
+                modal.setAttribute('aria-hidden','true');
+            }
+
+            openBtn && openBtn.addEventListener('click', function(e){ e.preventDefault(); show(); });
+            closeBtn && closeBtn.addEventListener('click', hide);
+            modal && modal.addEventListener('click', function(e){ if(e.target === modal) hide(); });
+            window.addEventListener('keydown', function(e){ if(e.key === 'Escape') hide(); });
+        })();
+    </script>
+</body>
+</html>
+
