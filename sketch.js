@@ -65,7 +65,8 @@ function setup(){
 }
 
 function draw(){
-    background(255, 255, 255, 0); // 透明背景（保留容器的 CSS 背景）
+    // 每幀清除整個 canvas（使用完全不透明的白色以清理所有痕跡）
+    clear();
 
     // 尚未收到分數時顯示提示文字（灰色）
     if (!isFinite(pct) && !animActive) {
@@ -181,8 +182,10 @@ function drawLowAnim(t, value){
     }
     pop();
 
-    // 分數始終顯示，淡化由 drawScoreOnly 內部控制
-    drawScoreOnly(value, pct, fadeAlpha);
+    // 分數顯示，淡化效果由 drawScoreOnly 內部的 fadeAlpha 控制
+    if (fadeAlpha > 0.01) {  // 只在還有可見透明度時繪製
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 // 中分動畫
@@ -219,8 +222,10 @@ function drawMidAnim(t, value){
     }
     pop();
 
-    // 分數始終顯示，淡化由 drawScoreOnly 內部控制
-    drawScoreOnly(value, pct, fadeAlpha);
+    // 分數顯示，淡化效果由 drawScoreOnly 內部的 fadeAlpha 控制
+    if (fadeAlpha > 0.01) {  // 只在還有可見透明度時繪製
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 // 高分動畫
@@ -249,8 +254,10 @@ function drawHighAnim(t, value){
     }
     pop();
 
-    // 分數始終顯示，淡化由 drawScoreOnly 內部控制
-    drawScoreOnly(value, pct, fadeAlpha);
+    // 分數顯示，淡化效果由 drawScoreOnly 內部的 fadeAlpha 控制
+    if (fadeAlpha > 0.01) {  // 只在還有可見透明度時繪製
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 function windowResized(){
