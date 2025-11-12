@@ -93,26 +93,27 @@ function draw() {
 // 靜態繪製（動畫結束或尚未啟動時）
 function drawStatic(scoreToShow, percentage) {
     textAlign(CENTER);
+    const centerY = height / 2;
     if (!isFinite(percentage)) {
         // handled before
     } else if (percentage >= 90) {
         fill(0, 160, 80);
         textSize(24);
-        text('恭喜！優異成績！', width / 2, height / 2 - 40);
+        text('恭喜！優異成績！', width / 2, centerY - 60);
     } else if (percentage >= 60) {
         fill(250, 170, 40);
         textSize(20);
-        text('成績良好，請再接再厲。', width / 2, height / 2 - 40);
+        text('成績良好，請再接再厲。', width / 2, centerY - 50);
     } else if (percentage > 0) {
         fill(200, 40, 40);
         textSize(20);
-        text('需要加強努力！', width / 2, height / 2 - 40);
+        text('需要加強努力！', width / 2, centerY - 50);
     }
 
     // 顯示具體分數
-    textSize(38);
+    textSize(42);
     fill(40);
-    text(`得分: ${Math.round(scoreToShow)}/${maxScore}`, width / 2, height / 2 + 10);
+    text(`得分: ${Math.round(scoreToShow)}/${maxScore}`, width / 2, centerY + 30);
 }
 // 啟動分數動畫，選擇動畫類型並開始繪製循環
 function startScoreAnimation(){
@@ -156,12 +157,12 @@ function drawLowAnimation(t, scoreNow){
 
     // 中央分數
     textAlign(CENTER);
-    textSize(36);
+    textSize(32);
     fill(120);
-    text('需要加強努力！', width/2, height/2 - 40);
-    textSize(48);
+    text('需要加強努力！', width/2, height/2 - 50);
+    textSize(44);
     fill(200,40,40);
-    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 10);
+    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 25);
 }
 
 // 中等分數動畫（61-80）：黃橘色光環與旋轉方塊
@@ -193,12 +194,12 @@ function drawMidAnimation(t, scoreNow){
 
     // 文字與分數
     textAlign(CENTER);
-    textSize(22);
+    textSize(20);
     fill(90);
-    text('成績良好，請再接再厲。', width/2, height/2 - 70);
-    textSize(46);
+    text('成績良好，請再接再厲。', width/2, height/2 - 60);
+    textSize(40);
     fill(60);
-    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 30);
+    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 25);
 }
 
 // 高分動畫（81-100）：綠色慶祝（泡泡/confetti）
@@ -225,12 +226,12 @@ function drawHighAnimation(t, scoreNow){
 
     // 中央慶祝文字與分數
     textAlign(CENTER);
-    textSize(26);
+    textSize(24);
     fill(10,140,70);
-    text('恭喜！優異成績！', width/2, height/2 - 60);
-    textSize(56);
+    text('恭喜！優異成績！', width/2, height/2 - 55);
+    textSize(48);
     fill(10,110,60);
-    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 10);
+    text(`${Math.round(scoreNow)}/${maxScore}`, width/2, height/2 + 25);
 }
 
 // 當視窗大小改變時，讓畫布跟著容器大小調整
