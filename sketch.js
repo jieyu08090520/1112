@@ -46,6 +46,9 @@ function setup() {
     const h = Math.max(220, Math.min(420, Math.round(w * 0.65)));
     const cnv = createCanvas(w, h);
     cnv.parent('scoreCanvas');
+    cnv.style.display = 'block';
+    cnv.style.margin = '0';
+    cnv.style.padding = '0';
     background(255);
     noLoop(); // 只在需要時重新繪製
 }
