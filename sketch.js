@@ -46,7 +46,16 @@ function setup(){
 function draw(){
     clear(); // 透明底
 
-    if (!isFinite(pct) && !animActive) return; // 沒有分數且不在動畫時不顯示任何內容
+    // 尚未收到分數時顯示提示文字（灰色）
+    if (!isFinite(pct) && !animActive) {
+        push();
+        textAlign(CENTER, CENTER);
+        fill(140);
+        textSize(min(width, height) * 0.08);
+        text('尚未收到成績', width / 2, height / 2);
+        pop();
+        return; // 不做其他繪製
+    }
 
     if (animActive) {
         const t = constrain((millis() - animStart) / animDur, 0, 1);
@@ -75,13 +84,54 @@ function drawScoreOnly(value, pctVal){
     push();
     textAlign(CENTER, CENTER);
     const cY = height/2;
-    const n = Math.round(value);
-    if (!isFinite(pctVal)) fill(140);
-    else if (pctVal <= 60) fill(220,40,40);
-    else if (pctVal <= 80) fill(255,180,40);
-    else fill(0,200,80);
-    textSize(min(width, height) * 0.36);
-    text(n, width/2, cY + 6);
+    const n = Math.round(value).toString();
+
+    // 準備文字：前綴、主要分數 (n/max)、百分比在下方
+    const prefix = '分數:';
+    const main = `${n}/${maxScore}`;
+    // 字型大小設定
+    const mainSize = Math.floor(min(width, height) * 0.32);
+    const prefixSize = Math.floor(mainSize * 0.46);
+    const pctSize = Math.floor(mainSize * 0.38);
+    const gap = Math.max(6, Math.floor(mainSize * 0.06));
+
+    // 計算總寬並置中
+    textSize(prefixSize);
+    const prefixW = textWidth(prefix);
+    textSize(mainSize);
+    const mainW = textWidth(main);
+    const totalW = prefixW + gap + mainW;
+    const startX = width/2 - totalW/2;
+
+    // 繪製 prefix（灰色）
+    textSize(prefixSize);
+    fill(140);
+    textAlign(LEFT, CENTER);
+    text(prefix, startX, cY - Math.floor(mainSize * 0.08));
+
+    // 繪製主要分數（依分數區間變色），並讓百分比與主要分數同色
+    textSize(mainSize);
+    // 決定顏色（p5 的 color() 物件或灰階值）
+    let mainColor;
+    if (!isFinite(pctVal)) {
+        mainColor = color(140);
+    } else if (pctVal <= 60) {
+        mainColor = color(220, 40, 40);
+    } else if (pctVal <= 80) {
+        mainColor = color(255, 180, 40);
+    } else {
+        mainColor = color(0, 200, 80);
+    }
+    textAlign(LEFT, CENTER);
+    fill(mainColor);
+    text(main, startX + prefixW + gap, cY - Math.floor(mainSize * 0.08));
+
+    // 百分比在下方（使用即時顯示的百分比，如果 anim 中為 display value）
+    const pctNow = isFinite(maxScore) && maxScore > 0 ? Math.round((Number(n) / maxScore) * 100) : 0;
+    textSize(pctSize);
+    fill(mainColor);
+    textAlign(CENTER, CENTER);
+    text(`${pctNow}%`, width/2, cY + Math.floor(mainSize * 0.6));
     pop();
 }
 
