@@ -93,7 +93,7 @@ function draw(){
 
 function easeOutCubic(t){ return 1 - pow(1 - t, 3); }
 
-function drawScoreOnly(value, pctVal){
+function drawScoreOnly(value, pctVal, fadeAlpha = 1){
     push();
     textAlign(CENTER, CENTER);
     const cY = height/2;
@@ -118,7 +118,7 @@ function drawScoreOnly(value, pctVal){
 
     // 繪製 prefix（灰色）
     textSize(prefixSize);
-    fill(140);
+    fill(140, 140, 140, 255 * fadeAlpha);
     textAlign(LEFT, CENTER);
     text(prefix, startX, cY - Math.floor(mainSize * 0.08));
 
@@ -127,13 +127,13 @@ function drawScoreOnly(value, pctVal){
     // 決定顏色（p5 的 color() 物件或灰階值）
     let mainColor;
     if (!isFinite(pctVal)) {
-        mainColor = color(140);
+        mainColor = color(140, 140, 140, 255 * fadeAlpha);
     } else if (pctVal <= 60) {
-        mainColor = color(220, 40, 40);
+        mainColor = color(220, 40, 40, 255 * fadeAlpha);
     } else if (pctVal <= 80) {
-        mainColor = color(255, 180, 40);
+        mainColor = color(255, 180, 40, 255 * fadeAlpha);
     } else {
-        mainColor = color(0, 200, 80);
+        mainColor = color(0, 200, 80, 255 * fadeAlpha);
     }
     textAlign(LEFT, CENTER);
     fill(mainColor);
@@ -155,29 +155,27 @@ function drawLowAnim(t, value){
     const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
 
     push(); 
-    globalAlpha(fadeAlpha);
     noStroke();
     const a = lerp(200, 40, t);
-    fill(255,220,220, a);
+    fill(255,220,220, a * fadeAlpha * 255);
     rect(0,0,width,height);
     pop();
 
     push();
-    globalAlpha(fadeAlpha);
     for (let i=0;i<12;i++){
         const ang = (TWO_PI * i / 12) + t * PI * 2;
         const r = 20 + 120 * (1 - t) * (0.4 + 0.6 * noise(i));
         const x = width/2 + cos(ang) * r + sin(t*PI + i) * 6;
         const y = height/2 + sin(ang) * r + cos(t*PI + i) * 6;
-        noStroke(); fill(200,40,40, 200 * (1 - t));
+        noStroke(); fill(200,40,40, 200 * (1 - t) * fadeAlpha);
         circle(x,y, 6 + 6*noise(i + t));
     }
     pop();
 
-    push();
-    globalAlpha(fadeAlpha);
-    drawScoreOnly(value, pct);
-    pop();
+    // 只在動畫進行中顯示分數
+    if (fadeAlpha > 0) {
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 // 中分動畫
@@ -187,12 +185,11 @@ function drawMidAnim(t, value){
     const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
 
     push();
-    globalAlpha(fadeAlpha);
     translate(width/2, height/2);
     rotate(t * PI * 0.8);
     for (let i=0;i<10;i++){
         push(); rotate((TWO_PI/10)*i);
-        stroke(255,200,80, 200 * (1 - t));
+        stroke(255,200,80, 200 * (1 - t) * fadeAlpha);
         strokeWeight(2);
         line(12,0, width*0.22 * (0.6 + 0.4 * (1 - t)), 0);
         pop();
@@ -200,10 +197,9 @@ function drawMidAnim(t, value){
     pop();
 
     push(); 
-    globalAlpha(fadeAlpha);
     translate(width/2, height/2 + 6);
     rotate(t * PI * 1.2);
-    noStroke(); fill(255,200,60, 200);
+    noStroke(); fill(255,200,60, 200 * fadeAlpha);
     rectMode(CENTER);
     for (let s=0;s<3;s++){
         push(); rotate(s * 0.35);
@@ -213,10 +209,10 @@ function drawMidAnim(t, value){
     }
     pop();
 
-    push();
-    globalAlpha(fadeAlpha);
-    drawScoreOnly(value, pct);
-    pop();
+    // 只在動畫進行中顯示分數
+    if (fadeAlpha > 0) {
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 // 高分動畫
@@ -226,30 +222,28 @@ function drawHighAnim(t, value){
     const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
 
     push();
-    globalAlpha(fadeAlpha);
     for (let y=0;y<height;y+=6){
         const mix = map(y,0,height,0,1);
-        stroke(240 - mix*10, 255 - mix*10, 245 - mix*5, 140*(1 - t));
+        stroke(240 - mix*10, 255 - mix*10, 245 - mix*5, 140*(1 - t) * fadeAlpha);
         line(0,y,width,y);
     }
     pop();
 
     push();
-    globalAlpha(fadeAlpha);
     for (let i=0;i<18;i++){
         const ang = i/18.0 * TWO_PI + t*PI*2;
         const dist = map(i%6,0,5,20, height*0.6) * t + random(-6,6);
         const x = width/2 + cos(ang)*dist;
         const y = height/2 + sin(ang)*dist - t * 40;
-        noStroke(); fill(20,180,80, 220*(1 - 0.4*t));
+        noStroke(); fill(20,180,80, 220*(1 - 0.4*t) * fadeAlpha);
         circle(x,y, 6 + 10*noise(i + t));
     }
     pop();
 
-    push();
-    globalAlpha(fadeAlpha);
-    drawScoreOnly(value, pct);
-    pop();
+    // 只在動畫進行中顯示分數
+    if (fadeAlpha > 0) {
+        drawScoreOnly(value, pct, fadeAlpha);
+    }
 }
 
 function windowResized(){
