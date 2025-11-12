@@ -32,13 +32,26 @@ window.addEventListener('message', (e) => {
 
 function setup(){
     const container = document.getElementById('scoreCanvas') || document.body;
+    // 強制容器為 relative 並移除內距，讓 canvas 可滿版覆蓋
+    container.style.position = container.style.position || 'relative';
+    container.style.padding = '0';
+    container.style.overflow = 'hidden';
+    // 若容器尚未有高度，設定一個最小高度以避免高度為 0
+    if (!container.clientHeight) container.style.minHeight = container.style.minHeight || '220px';
+
     const w = Math.max(260, container.clientWidth || 320);
-    const h = Math.max(180, Math.round(w * 0.6));
+    const h = container.clientHeight && container.clientHeight > 0 ? container.clientHeight : Math.max(180, Math.round(w * 0.6));
     const cnv = createCanvas(w, h);
     cnv.parent('scoreCanvas');
-    cnv.style.display = 'block';
-    cnv.style.width = '100%';
-    cnv.style.height = 'auto';
+    // 讓 canvas 絕對定位並覆蓋整個容器（滿版效果）
+    if (cnv && cnv.elt) {
+        cnv.elt.style.position = 'absolute';
+        cnv.elt.style.top = '0';
+        cnv.elt.style.left = '0';
+        cnv.elt.style.width = '100%';
+        cnv.elt.style.height = '100%';
+        cnv.elt.style.display = 'block';
+    }
     clear();
     noLoop();
 }
@@ -213,7 +226,13 @@ function drawHighAnim(t, value){
 function windowResized(){
     const container = document.getElementById('scoreCanvas') || document.body;
     const w = Math.max(260, container.clientWidth || 320);
-    const h = Math.max(180, Math.round(w * 0.6));
+    const h = container.clientHeight && container.clientHeight > 0 ? container.clientHeight : Math.max(180, Math.round(w * 0.6));
     resizeCanvas(w, h);
+    // 確保 DOM 大小也同步（當容器高改變時）
+    const cnv = document.querySelector('#scoreCanvas canvas');
+    if (cnv) {
+        cnv.style.width = '100%';
+        cnv.style.height = '100%';
+    }
     redraw();
 }
