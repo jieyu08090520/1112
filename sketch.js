@@ -150,13 +150,20 @@ function drawScoreOnly(value, pctVal){
 
 // 低分動畫
 function drawLowAnim(t, value){
-    push(); noStroke();
+    // 最後 20% 時開始淡化整個元素
+    const fadeStart = 0.8;
+    const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
+
+    push(); 
+    globalAlpha(fadeAlpha);
+    noStroke();
     const a = lerp(200, 40, t);
     fill(255,220,220, a);
     rect(0,0,width,height);
     pop();
 
     push();
+    globalAlpha(fadeAlpha);
     for (let i=0;i<12;i++){
         const ang = (TWO_PI * i / 12) + t * PI * 2;
         const r = 20 + 120 * (1 - t) * (0.4 + 0.6 * noise(i));
@@ -167,12 +174,20 @@ function drawLowAnim(t, value){
     }
     pop();
 
+    push();
+    globalAlpha(fadeAlpha);
     drawScoreOnly(value, pct);
+    pop();
 }
 
 // 中分動畫
 function drawMidAnim(t, value){
+    // 最後 20% 時開始淡化整個元素
+    const fadeStart = 0.8;
+    const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
+
     push();
+    globalAlpha(fadeAlpha);
     translate(width/2, height/2);
     rotate(t * PI * 0.8);
     for (let i=0;i<10;i++){
@@ -184,7 +199,9 @@ function drawMidAnim(t, value){
     }
     pop();
 
-    push(); translate(width/2, height/2 + 6);
+    push(); 
+    globalAlpha(fadeAlpha);
+    translate(width/2, height/2 + 6);
     rotate(t * PI * 1.2);
     noStroke(); fill(255,200,60, 200);
     rectMode(CENTER);
@@ -196,12 +213,20 @@ function drawMidAnim(t, value){
     }
     pop();
 
+    push();
+    globalAlpha(fadeAlpha);
     drawScoreOnly(value, pct);
+    pop();
 }
 
 // 高分動畫
 function drawHighAnim(t, value){
+    // 最後 20% 時開始淡化整個元素
+    const fadeStart = 0.8;
+    const fadeAlpha = t > fadeStart ? map(t, fadeStart, 1, 1, 0) : 1;
+
     push();
+    globalAlpha(fadeAlpha);
     for (let y=0;y<height;y+=6){
         const mix = map(y,0,height,0,1);
         stroke(240 - mix*10, 255 - mix*10, 245 - mix*5, 140*(1 - t));
@@ -210,6 +235,7 @@ function drawHighAnim(t, value){
     pop();
 
     push();
+    globalAlpha(fadeAlpha);
     for (let i=0;i<18;i++){
         const ang = i/18.0 * TWO_PI + t*PI*2;
         const dist = map(i%6,0,5,20, height*0.6) * t + random(-6,6);
@@ -220,7 +246,10 @@ function drawHighAnim(t, value){
     }
     pop();
 
+    push();
+    globalAlpha(fadeAlpha);
     drawScoreOnly(value, pct);
+    pop();
 }
 
 function windowResized(){
